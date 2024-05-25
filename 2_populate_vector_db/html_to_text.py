@@ -15,76 +15,89 @@
 # THIS UTILITY PARSES HTMLS TO TEXT FOR PROCESSING BY A VECTOR DATABASE
 # Use html_links.txt to update with your own URLs and run/rerun CML job.
 
-import requests
+import os
+import re
+import time
+from urllib.parse import urljoin, urlparse
 from xml.etree import ElementTree as ET
 
-from bs4 import BeautifulSoup
-import re
-import os
 import requests
-from requests.exceptions import ConnectionError
+from bs4 import BeautifulSoup
 from requests import exceptions
-import time
-from urllib.parse import urlparse, urljoin
+from requests.exceptions import ConnectionError
 
 visited_urls = set()
 max_retries = 5
 retry_delay_seconds = 2
 
+
 # Clean up string
 def remove_non_ascii(s):
     return "".join(i for i in s if ord(i) < 128)
+
 
 def get_tld(url):
     parsed_url = urlparse(url)
     return f"{parsed_url.scheme}://{parsed_url.netloc}"
 
+
 def create_directory_path_from_url(base_path, url):
-    url_parts = url.strip('/').split('/')
+    url_parts = url.strip("/").split("/")
     directory_path = os.path.join(base_path, *url_parts[:-1])
     file_name = f"{url_parts[-1]}.txt"
     file_path = os.path.join(directory_path, file_name)
     return directory_path, file_path
 
+
 def extract_and_write_text(url, base_path, tld):
     if url in visited_urls or not url.startswith(tld):
         return
     visited_urls.add(url)
-    
+
     for attempt in range(1, max_retries + 1):
         try:
             # Your API call or any HTTP request
             response = requests.get(url)
-            
+
             # If status code is good (e.g., 200), break the loop
             if response.status_code == 200:
                 break
+            if response.status_code == 404:
+                return
 
         except:
             print(f"Request attempt {attempt} failed with connection error.")
-            
+
             # Sleep for a while before retrying
             print(f"Retrying in {retry_delay_seconds} seconds...")
             time.sleep(retry_delay_seconds)
-            
-    soup = BeautifulSoup(response.content, 'html.parser')
 
-    main_content = soup.find('main')
+    soup = BeautifulSoup(response.content, "html.parser")
+    print(url)
 
-    if url.endswith('.html'):
+    content = soup.find("div", {"class": "entry-content"})
+    assert content is not None, "content is none"
+    content = content.get_text().replace(".", ". ")
+
+    title = soup.find("h1", {"class": "entry-title"})
+    assert title is not None, "title is none"
+    title = title.get_text().replace(".", ". ")
+
+    main_content = title + "\n" + content
+
+    if url.endswith(".html"):
         url = url[:-5]
 
     directory_path, file_path = create_directory_path_from_url(base_path, url)
-    
+
     os.makedirs(directory_path, exist_ok=True)
-    
-    
-    
-    with open(file_path, 'w', encoding='utf-8') as f:
+
+    with open(file_path, "w", encoding="utf-8") as f:
         soup_text = soup.get_text()
-        soup_text = soup_text.replace('\n', ' ')
+        soup_text = soup_text.replace("\n", " ")
         soup_text = remove_non_ascii(soup_text)
         f.write(soup_text)
+
 
 def main():
     base_path = "/home/cdsw/data"
@@ -95,5 +108,6 @@ def main():
                 tld = get_tld(url)
                 extract_and_write_text(url, base_path, tld)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
