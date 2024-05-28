@@ -1,1 +1,1 @@
-pip3 install -r 0_install_prerequisites/requirements.txt
+pip3 install -r 9_create_endpoint/requirements.txt
