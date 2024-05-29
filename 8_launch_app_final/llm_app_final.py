@@ -1,21 +1,21 @@
-import os
-import gradio as gr
-import cmlapi
-import pinecone
-from typing import Any, Union, Optional
-from pydantic import BaseModel
-import tensorflow as tf
-from sentence_transformers import SentenceTransformer
-import requests
 import json
+import os
 import time
-from typing import Optional
-import boto3
-from botocore.config import Config
-import chromadb
-from chromadb.utils import embedding_functions
+from typing import Any, Optional, Union
 
+import boto3
+import chromadb
+import cmlapi
+import gradio as gr
+import pinecone
+import requests
+import tensorflow as tf
+from botocore.config import Config
+from chromadb.utils import embedding_functions
 from huggingface_hub import hf_hub_download
+from pinecone import Pinecone, ServerlessSpec
+from pydantic import BaseModel
+from sentence_transformers import SentenceTransformer
 
 # Set any of these to False, if not using respective parts of the lab
 USE_PINECONE = True
@@ -90,8 +90,10 @@ client = cmlapi.default_client(
     url=os.getenv("CDSW_API_URL").replace("/api/v1", ""),
     cml_api_key=os.getenv("CDSW_APIV2_KEY"),
 )
+
 projects = client.list_projects(
-    include_public_projects=True, search_filter=json.dumps({"name": "Shared LLM Model"})
+    include_public_projects=True,
+    search_filter=json.dumps({"name": "Shared LLM Model"}),
 )
 project = projects.projects[0]
 
@@ -346,7 +348,7 @@ def get_nearest_chunk_from_pinecone_vectordb(index, question):
     # Generate embedding for user question with embedding model
     retriever = SentenceTransformer(EMBEDDING_MODEL_REPO)
     xq = retriever.encode([question]).tolist()
-    xc = index.query(xq, top_k=5, include_metadata=True)
+    xc = index.query(vector=xq, top_k=5, include_metadata=True)
 
     matching_files = []
     scores = []
