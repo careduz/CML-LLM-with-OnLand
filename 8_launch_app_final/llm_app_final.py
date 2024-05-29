@@ -339,7 +339,7 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
 
 
 def url_from_source(source):
-    url = source.replace("/home/cdsw/data/https:/", "https://").replace(".txt", ".html")
+    url = source.replace("/home/cdsw/data/https:/", "https://").replace(".txt", "")
     return f"[Reference 1]({url})"
 
 
