@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import boto3
 import chromadb
@@ -9,12 +9,8 @@ import cmlapi
 import gradio as gr
 import pinecone
 import requests
-import tensorflow as tf
 from botocore.config import Config
 from chromadb.utils import embedding_functions
-from huggingface_hub import hf_hub_download
-from pinecone import Pinecone, ServerlessSpec
-from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 
 # Set any of these to False, if not using respective parts of the lab
