@@ -5,30 +5,30 @@ date: "2023-12-20"
 specification_version: 1.0
 prototype_version: 1.0
 environment_variables:
-  #AWS_ACCESS_KEY_ID:
-  #  default: ""
-  #  description: "Access key ID for interacting with AWS Bedrock"
-  #AWS_SECRET_ACCESS_KEY:
-  #  default: ""
-  #  description: "Secret ket for interacting with AWS Bedrock"
-  #AWS_DEFAULT_REGION:
-  #  default: "us-west-2"
-  #  description: "AWS Region where Bedrock models are available"
-  #PINECONE_API_KEY:
-  #  default: ""
-  #  description: "API Keys for Pinecone service"
-  #PINECONE_ENVIRONMENT:
-  #  default: ""
-  #  description: "Environment within Pinecone service"
-  PINECONE_INDEX:
+  AWS_ACCESS_KEY_ID:
     default: ""
+    description: "Access key ID for interacting with AWS Bedrock"
+  AWS_SECRET_ACCESS_KEY:
+    default: ""
+    description: "Secret ket for interacting with AWS Bedrock"
+  AWS_DEFAULT_REGION:
+    default: "us-west-2"
+    description: "AWS Region where Bedrock models are available"
+  PINECONE_API_KEY:
+    default: ""
+    description: "API Keys for Pinecone service"
+  PINECONE_ENVIRONMENT:
+    default: "gcp-starter"
+    description: "Cloud Region within Pinecone service"
+  PINECONE_INDEX:
+    default: "llm-demo"
     description: "Index within Pinecone Environment"
 
-runtimes: 
+runtimes:
   - editor: JupyterLab
     kernel: Python 3.10
     edition: Nvidia GPU
-  
+
 tasks:
   - type: run_session
     name: Install Dependencies
@@ -52,7 +52,7 @@ tasks:
     entity_label: htmls_to_txt
     script: 2_populate_vector_db/html_to_text.py
     arguments: None
-    short_summary: Create job to source htmls, download, and convert them to text. 
+    short_summary: Create job to source htmls, download, and convert them to text.
     long_summary: Create job to source htmls, download, and convert them to text. Update html_links.txt with the htmls you wish to download and convert.
     cpu: 2
     memory: 4
