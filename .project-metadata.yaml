@@ -12,17 +12,20 @@ environment_variables:
     default: ""
     description: "Secret ket for interacting with AWS Bedrock"
   AWS_DEFAULT_REGION:
-    default: "us-west-2"
+    default: us-west-2
     description: "AWS Region where Bedrock models are available"
   PINECONE_API_KEY:
     default: ""
     description: "API Keys for Pinecone service"
-  PINECONE_ENVIRONMENT:
-    default: "gcp-starter"
-    description: "Cloud Region within Pinecone service"
+  # PINECONE_ENVIRONMENT:
+  #   default: gcp-starter
+  #   description: "Cloud Region within Pinecone service"
   PINECONE_INDEX:
-    default: "llm-demo"
+    default: llm-demo
     description: "Index within Pinecone Environment"
+  PINECONE_REGION:
+    default: us-central1
+    description: "Region of Pinecone index"
 
 runtimes:
   - editor: JupyterLab
