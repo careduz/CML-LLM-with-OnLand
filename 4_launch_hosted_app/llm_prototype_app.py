@@ -1,21 +1,20 @@
+import json
 import os
-import cmlapi
 import sys
+import time
+from typing import Any, Optional, Union
+
+import boto3
+import cmlapi
 import gradio as gr
 import pinecone
-from pinecone import Pinecone, ServerlessSpec
-from typing import Any, Union, Optional
-from pydantic import BaseModel
-import tensorflow as tf
-from sentence_transformers import SentenceTransformer
 import requests
-import json
-import time
-from typing import Optional
-import boto3
+import tensorflow as tf
 from botocore.config import Config
 from huggingface_hub import hf_hub_download
-
+from pinecone import Pinecone, ServerlessSpec
+from pydantic import BaseModel
+from sentence_transformers import SentenceTransformer
 
 USE_PINECONE = True  # Set this to False avoid any Pinecone calls
 
@@ -237,7 +236,7 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
 
 
 def url_from_source(source):
-    url = source.replace("/home/cdsw/data/https:/", "https://").replace(".txt", ".html")
+    url = source.replace("/home/cdsw/data/https:/", "https://").replace(".txt", "")
     return f"[Reference 1]({url})"
 
 
