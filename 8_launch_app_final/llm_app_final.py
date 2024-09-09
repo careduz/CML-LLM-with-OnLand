@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import boto3
 import chromadb
@@ -9,8 +9,12 @@ import cmlapi
 import gradio as gr
 import pinecone
 import requests
+import tensorflow as tf
 from botocore.config import Config
 from chromadb.utils import embedding_functions
+from huggingface_hub import hf_hub_download
+from pinecone import Pinecone, ServerlessSpec
+from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 
 # Set any of these to False, if not using respective parts of the lab
@@ -22,15 +26,14 @@ EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
 
 if USE_PINECONE:
     PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-    PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT")
     PINECONE_INDEX = os.getenv("PINECONE_INDEX")
 
     print("initialising Pinecone connection...")
-    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+    pc = Pinecone(api_key=PINECONE_API_KEY)
     print("Pinecone initialised")
 
     print(f"Getting '{PINECONE_INDEX}' as object...")
-    index = pinecone.Index(PINECONE_INDEX)
+    index = pc.Index(PINECONE_INDEX)
     print("Success")
 
     # Get latest statistics from index
