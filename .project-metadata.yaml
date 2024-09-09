@@ -28,6 +28,7 @@ runtimes:
   - editor: JupyterLab
     kernel: Python 3.10
     edition: Nvidia GPU
+    version: "2024.05"
 
 tasks:
   - type: run_session
